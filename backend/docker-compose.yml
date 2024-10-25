@@ -1,0 +1,40 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq_weather_to_gif_app
+    ports:
+      - "5672:5672" # default
+      - "15672:15672" # management UI port
+    networks:
+      - backend_network
+
+  # FastAPI app (Producer)
+  fastapi_app:
+    build: 
+      context: . # Point to root for Dockerfile-producer
+      dockerfile: Dockerfile-producer # Use producer Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq_weather_to_gif_app
+    networks:
+      - backend_network
+
+  # Consumer service
+  consumer_app:
+    build:
+      context: . # Point to root for Dockerfile-consumer
+      dockerfile: Dockerfile-consumer # Use consumer Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq_weather_to_gif_app
+    networks:
+      - backend_network
+  
+networks:
+  backend_network:
+    driver: bridge

@@ -1,0 +1,5 @@
+backend/common/api_key.py
+backend/components
+__pycache__/
+venv/
+*.log'
