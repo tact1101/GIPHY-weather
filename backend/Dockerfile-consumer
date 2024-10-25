@@ -1,33 +1,9 @@
-# FROM python:3.12-slim
+FROM python:3.12-slim
 
-# WORKDIR /app
-
-# # Copy the consumer code and dependencies
-# COPY . /app
-
-# # Install Python dependencies
-# RUN pip install --no-cache-dir -r requirements.txt
-
-# # Run the consumer directly
-# CMD ["python", "worker.py"]
-# Use the official Python image from the Docker Hub
-FROM python:3.11-slim
-
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set the working directory
 WORKDIR /app
 
-# Copy requirements.txt first to leverage Docker cache for faster builds
-COPY requirements.txt .
+COPY . /app
 
-# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire app code into the container
-COPY components/ ./components/
-
-# If you have a specific entry point, replace this with your FastAPI app
-CMD ["uvicorn", "components.worker"]
+CMD ["python", "worker.py"]
